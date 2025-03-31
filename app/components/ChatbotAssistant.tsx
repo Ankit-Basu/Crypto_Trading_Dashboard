@@ -5,11 +5,29 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { MessageSquareIcon, SendIcon, BotIcon, UserIcon } from 'lucide-react';
+import { Badge } from "@/components/ui/badge";
+import { 
+  MessageSquareIcon, 
+  SendIcon, 
+  BotIcon, 
+  UserIcon, 
+  TrendingUpIcon, 
+  LineChartIcon, 
+  NewspaperIcon, 
+  AlertCircleIcon,
+  BellIcon
+} from 'lucide-react';
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
+}
+
+interface QuickAction {
+  label: string;
+  query: string;
+  icon: React.ReactNode;
+  color: string;
 }
 
 export default function ChatbotAssistant() {
@@ -24,6 +42,39 @@ export default function ChatbotAssistant() {
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  const quickActions: QuickAction[] = [
+    {
+      label: "Market Analysis",
+      query: "Give me a market analysis for Bitcoin and Ethereum",
+      icon: <TrendingUpIcon className="h-4 w-4" />,
+      color: "bg-blue-500 hover:bg-blue-600"
+    },
+    {
+      label: "Trading Strategies",
+      query: "What trading strategies work best in the current market?",
+      icon: <LineChartIcon className="h-4 w-4" />,
+      color: "bg-purple-500 hover:bg-purple-600"
+    },
+    {
+      label: "Latest News",
+      query: "What are the latest crypto news headlines?",
+      icon: <NewspaperIcon className="h-4 w-4" />,
+      color: "bg-green-500 hover:bg-green-600"
+    },
+    {
+      label: "Set Alert",
+      query: "Set an alert for Bitcoin when RSI goes below 30",
+      icon: <BellIcon className="h-4 w-4" />,
+      color: "bg-amber-500 hover:bg-amber-600"
+    },
+    {
+      label: "Risk Assessment",
+      query: "What's the risk level for investing in Ethereum now?",
+      icon: <AlertCircleIcon className="h-4 w-4" />,
+      color: "bg-red-500 hover:bg-red-600"
+    }
+  ];
 
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
@@ -89,11 +140,15 @@ export default function ChatbotAssistant() {
     }
   };
 
+  const handleQuickAction = (query: string) => {
+    setInput(query);
+  };
+
   return (
-    <Card className="w-full max-w-2xl mx-auto h-[600px] flex flex-col">
-      <CardHeader className="border-b px-6 py-4">
+    <Card className="w-full h-[700px] flex flex-col shadow-lg border-2 border-primary/10 rounded-xl bg-gradient-to-b from-background to-background/80">
+      <CardHeader className="border-b px-6 py-4 bg-primary/5 rounded-t-xl">
         <CardTitle className="text-xl font-bold flex items-center gap-2">
-          <MessageSquareIcon className="h-5 w-5" />
+          <BotIcon className="h-6 w-6 text-primary" />
           Crypto Trading Assistant
         </CardTitle>
       </CardHeader>
@@ -109,15 +164,15 @@ export default function ChatbotAssistant() {
                 }`}
               >
                 <div
-                  className={`max-w-[80%] rounded-lg p-4 ${
+                  className={`max-w-[80%] rounded-2xl p-4 ${
                     message.role === 'assistant'
-                      ? 'bg-secondary text-secondary-foreground'
-                      : 'bg-primary text-primary-foreground'
+                      ? 'bg-secondary/80 text-secondary-foreground shadow-md'
+                      : 'bg-primary text-primary-foreground shadow-md'
                   }`}
                 >
                   <div className="flex items-start gap-3">
                     {message.role === 'assistant' ? (
-                      <BotIcon className="h-5 w-5 mt-1" />
+                      <BotIcon className="h-5 w-5 mt-1 text-primary" />
                     ) : (
                       <UserIcon className="h-5 w-5 mt-1" />
                     )}
@@ -131,14 +186,33 @@ export default function ChatbotAssistant() {
             <div ref={messagesEndRef} />
             {isLoading && (
               <div className="flex items-center gap-2 text-muted-foreground">
-                <div className="animate-spin">
-                  <SendIcon className="h-4 w-4" />
+                <div className="animate-pulse flex space-x-2">
+                  <div className="h-2 w-2 bg-primary rounded-full"></div>
+                  <div className="h-2 w-2 bg-primary rounded-full"></div>
+                  <div className="h-2 w-2 bg-primary rounded-full"></div>
                 </div>
-                Thinking...
+                <span>Thinking...</span>
               </div>
             )}
           </div>
         </ScrollArea>
+      </div>
+
+      {/* Quick Action Buttons */}
+      <div className="px-4 py-3 border-t border-border/50 bg-muted/30">
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin">
+          {quickActions.map((action, index) => (
+            <Button
+              key={index}
+              size="sm"
+              onClick={() => handleQuickAction(action.query)}
+              className={`whitespace-nowrap text-white ${action.color}`}
+            >
+              {action.icon}
+              <span className="ml-1">{action.label}</span>
+            </Button>
+          ))}
+        </div>
       </div>
 
       <CardContent className="border-t p-4 mt-auto">
@@ -148,9 +222,13 @@ export default function ChatbotAssistant() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             disabled={isLoading}
-            className="flex-grow"
+            className="flex-grow rounded-full bg-muted/50 border-primary/20 focus-visible:ring-primary/30"
           />
-          <Button type="submit" disabled={isLoading || !input.trim()}>
+          <Button 
+            type="submit" 
+            disabled={isLoading || !input.trim()}
+            className="rounded-full aspect-square p-2"
+          >
             <SendIcon className="h-4 w-4" />
           </Button>
         </form>

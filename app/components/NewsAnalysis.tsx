@@ -6,7 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getCryptoNews, NewsApiResult } from '../lib/api';
 import { Skeleton } from "@/components/ui/skeleton";
-import { ExternalLinkIcon } from 'lucide-react';
+import { NewspaperIcon, ExternalLinkIcon, ChevronRightIcon } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 
 interface NewsItem extends NewsApiResult {
   sentiment: 'Bullish' | 'Bearish' | 'Neutral';
@@ -16,6 +17,7 @@ export default function NewsAnalysis() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [expandedItems, setExpandedItems] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -61,11 +63,11 @@ export default function NewsAnalysis() {
   const getSentimentColor = (sentiment: string) => {
     switch (sentiment.toLowerCase()) {
       case 'bullish':
-        return 'bg-green-500/10 text-green-500';
+        return 'bg-green-500/10 text-green-500 border-green-500/20';
       case 'bearish':
-        return 'bg-red-500/10 text-red-500';
+        return 'bg-red-500/10 text-red-500 border-red-500/20';
       default:
-        return 'bg-gray-500/10 text-gray-500';
+        return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
     }
   };
 
@@ -74,85 +76,95 @@ export default function NewsAnalysis() {
       const date = new Date(dateString);
       return date.toLocaleDateString('en-US', {
         month: 'short',
-        day: 'numeric',
-        year: 'numeric'
+        day: 'numeric'
       });
     } catch {
       return dateString;
     }
   };
 
+  const toggleExpand = (index: number) => {
+    setExpandedItems(prev => ({
+      ...prev,
+      [index]: !prev[index]
+    }));
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-5 w-5"
-          >
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-            <polyline points="14 2 14 8 20 8" />
-            <line x1="16" y1="13" x2="8" y2="13" />
-            <line x1="16" y1="17" x2="8" y2="17" />
-            <line x1="10" y1="9" x2="8" y2="9" />
-          </svg>
-          Market News & Sentiment
+    <Card className="w-full h-full shadow-md border-primary/10">
+      <CardHeader className="py-3 px-4">
+        <CardTitle className="text-base flex items-center gap-1">
+          <NewspaperIcon className="h-4 w-4 text-primary" />
+          <span>News & Sentiment</span>
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <ScrollArea className="h-[400px] pr-4">
+      <CardContent className="p-0">
+        <ScrollArea className="h-[400px]">
           {loading ? (
-            <div className="space-y-4">
-              {[...Array(5)].map((_, i) => (
+            <div className="space-y-3 p-4">
+              {[...Array(3)].map((_, i) => (
                 <div key={i} className="space-y-2">
                   <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-3 w-full" />
                   <Skeleton className="h-3 w-1/2" />
                 </div>
               ))}
             </div>
           ) : error ? (
-            <div className="text-center text-muted-foreground py-8">
+            <div className="text-center text-muted-foreground py-6">
               <p>{error}</p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="divide-y divide-border">
               {news.map((item, index) => (
-                <a
+                <div
                   key={index}
-                  href={item.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block rounded-lg border bg-card p-4 transition-all hover:shadow-md hover:bg-accent/5"
+                  className="p-3 hover:bg-muted/20 transition-colors"
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="space-y-1 flex-grow">
-                      <div className="flex items-start justify-between gap-2">
-                        <h3 className="font-semibold leading-tight hover:underline">
+                  <div className="space-y-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1">
+                        <h3 className="text-sm font-medium line-clamp-2">
                           {item.title}
-                          <ExternalLinkIcon className="inline-block ml-1 h-3 w-3" />
                         </h3>
+                        <div className="flex items-center text-xs text-muted-foreground mt-0.5">
+                          <span className="font-medium">{item.source_id}</span>
+                          <span className="mx-1">•</span>
+                          <span>{formatDate(item.pubDate)}</span>
+                        </div>
                       </div>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
+                      <Badge className={`${getSentimentColor(item.sentiment)} text-xs border`}>
+                        {item.sentiment}
+                      </Badge>
+                    </div>
+                    
+                    {expandedItems[index] && (
+                      <p className="text-xs text-muted-foreground mt-2">
                         {item.description}
                       </p>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <span className="font-medium">{item.source_id}</span>
-                        <span>•</span>
-                        <span>{formatDate(item.pubDate)}</span>
-                      </div>
+                    )}
+                    
+                    <div className="flex justify-between items-center mt-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 px-2 text-xs"
+                        onClick={() => toggleExpand(index)}
+                      >
+                        {expandedItems[index] ? 'Show Less' : 'Read More'}
+                      </Button>
+                      
+                      <a
+                        href={item.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-primary flex items-center hover:underline"
+                      >
+                        Source
+                        <ExternalLinkIcon className="h-3 w-3 ml-0.5" />
+                      </a>
                     </div>
-                    <Badge className={`${getSentimentColor(item.sentiment)} whitespace-nowrap`}>
-                      {item.sentiment}
-                    </Badge>
                   </div>
-                </a>
+                </div>
               ))}
             </div>
           )}

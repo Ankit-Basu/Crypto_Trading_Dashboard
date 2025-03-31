@@ -4,7 +4,7 @@ import { handleApiResponse, createApiRequest, ApiError } from './utils';
 const COINGECKO_API_BASE = 'https://api.coingecko.com/api/v3';
 
 export async function getTopCryptos(limit: number = 20): Promise<CryptoAsset[]> {
-  const apiKey = process.env.NEXT_PUBLIC_COINGECKO_API_KEY;
+  const apiKey = process.env.NEXT_PUBLIC_GECKO_API_KEY;
   if (!apiKey) {
     throw new Error('CoinGecko API key is not configured');
   }
@@ -45,7 +45,7 @@ export async function getCryptoHistory(
   interval: string = 'daily',
   retryCount: number = 0
 ): Promise<{ prices: [number, number][] }> {
-  const apiKey = process.env.NEXT_PUBLIC_COINGECKO_API_KEY;
+  const apiKey = process.env.NEXT_PUBLIC_GECKO_API_KEY;
   if (!apiKey) {
     throw new Error('CoinGecko API key is not configured');
   }
@@ -104,7 +104,7 @@ export async function getCryptoHistory(
   }
 }
 
-const NEWS_API_KEY = process.env.NEXT_PUBLIC_NEWSDATA_API_KEY;
+const NEWS_API_KEY = process.env.NEXT_PUBLIC_NEWSDATA_API_KEY || process.env.NEWSDATA_API_KEY;
 const NEWS_API_BASE_URL = 'https://newsdata.io/api/1/news';
 
 export interface NewsApiResult {
