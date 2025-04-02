@@ -50,7 +50,8 @@ A comprehensive, AI-powered dashboard for cryptocurrency trading analysis, marke
 
 ### APIs
 - **CoinGecko API**: Comprehensive cryptocurrency market data
-- **News APIs**: Real-time crypto news aggregation
+- **NewsData API**: Real-time crypto news and market sentiment analysis
+- **Binance WebSocket**: Live cryptocurrency price streaming
 
 ## 📋 Prerequisites
 
@@ -77,6 +78,7 @@ A comprehensive, AI-powered dashboard for cryptocurrency trading analysis, marke
    Create a `.env.local` file in the root directory with the following variables:
    ```
    NEXT_PUBLIC_COINGECKO_API_KEY=your_coingecko_api_key
+   NEXT_PUBLIC_NEWSDATA_API_KEY=your_newsdata_api_key
    NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key
    # Add other API keys as needed
    ```
