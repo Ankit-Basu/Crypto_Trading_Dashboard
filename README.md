@@ -33,6 +33,10 @@ A comprehensive, AI-powered dashboard for cryptocurrency trading analysis, marke
 
 ![AI Trading Assistant](./screenshots/Screenshot%202025-04-02%20225446.png)
 
+![Additional Dashboard View](./screenshots/Screenshot%202025-04-02%20231830.png)
+
+![Portfolio Analysis](./screenshots/Screenshot%202025-04-02%20231901.png)
+
 ## 🛠️ Technologies
 
 ### Frontend
