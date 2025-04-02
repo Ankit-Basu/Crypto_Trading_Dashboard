@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { CryptoAsset } from '../types/market';
 import { ArrowUpIcon, ArrowDownIcon, BarChart3Icon, DollarSignIcon, HistoryIcon } from 'lucide-react';
 
@@ -262,15 +263,9 @@ export default function TradingSimulator({ asset }: TradingSimulatorProps) {
   };
   
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <BarChart3Icon className="h-5 w-5" />
-          Trading Simulator
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-6">
+    <div className="h-[400px] max-h-[400px] flex flex-col">
+      <ScrollArea className="flex-1 overflow-auto">
+        <div className="space-y-6 p-1">
           {/* Account Summary */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="bg-card/50">
@@ -506,7 +501,7 @@ export default function TradingSimulator({ asset }: TradingSimulatorProps) {
             </Button>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </ScrollArea>
+    </div>
   );
 }

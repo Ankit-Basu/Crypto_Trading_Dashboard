@@ -377,7 +377,7 @@ export default function AITradingAssistant({ asset }: AITradingAssistantProps) {
               )}
               
               {/* Other Signals */}
-              {signals.length > 1 && (
+              {signals.length > 1 && topSignal && (
                 <div>
                   <h3 className="text-xs font-medium text-muted-foreground mb-2">Additional Signals</h3>
                   <div className="space-y-2">

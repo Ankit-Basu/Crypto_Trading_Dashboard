@@ -50,33 +50,49 @@
   }
  
   .dark {
+    /* Keep original dark background */
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
  
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
+    /* Semi-transparent dark slate card background */
+    --card: 217 30% 17% / 0.7;
+    --card-foreground: 210 40% 96.1%;
  
+    /* Popover styling */
     --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
+    --popover-foreground: 210 40% 96.1%;
  
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
+    /* Indigo to purple gradient for primary */
+    --primary: 244 75% 67%;
+    --primary-foreground: 210 40% 98%;
  
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
+    /* Blue to teal gradient for secondary */
+    --secondary: 199 89% 48%;
+    --secondary-foreground: 210 40% 98%;
  
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
+    /* Muted elements */
+    --muted: 217 30% 17%;
+    --muted-foreground: 215 20% 80%;
  
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
+    /* Pink accent */
+    --accent: 336 100% 70%;
+    --accent-foreground: 210 40% 98%;
  
+    /* Destructive elements */
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
  
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
+    /* Border and input styling */
+    --border: 217 30% 25%;
+    --input: 217 30% 25%;
+    --ring: 244 75% 67%;
+
+    /* Chart colors */
+    --chart-1: 244 75% 67%;
+    --chart-2: 199 89% 48%;
+    --chart-3: 336 100% 70%;
+    --chart-4: 262 83% 66%;
+    --chart-5: 172 70% 50%;
   }
 }
 
@@ -86,5 +102,76 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-image: 
+      radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 20%),
+      radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 20%),
+      radial-gradient(circle at 50% 50%, rgba(45, 212, 191, 0.05) 0%, transparent 50%);
   }
+}
+
+/* Glassmorphic elements */
+.glassmorphic {
+  background-color: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+}
+
+.glassmorphic-light {
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Button styling */
+.btn-primary {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.5);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #3b82f6, #2dd4bf);
+  box-shadow: 0 4px 12px rgba(45, 212, 191, 0.2);
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(45, 212, 191, 0.4);
+}
+
+/* Tab styling */
+.tab-button {
+  color: var(--muted-foreground);
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.tab-button:hover {
+  color: var(--foreground);
+}
+
+.tab-button.active {
+  color: var(--foreground);
+  position: relative;
+}
+
+.tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border-radius: 2px;
 }

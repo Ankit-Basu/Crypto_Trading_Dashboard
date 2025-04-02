@@ -6,8 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getCryptoNews, NewsApiResult } from '../lib/api';
 import { Skeleton } from "@/components/ui/skeleton";
-import { NewspaperIcon, ExternalLinkIcon, ChevronRightIcon } from 'lucide-react';
+import { NewspaperIcon, ExternalLinkIcon, ChevronRightIcon, ImageIcon } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import Image from 'next/image';
 
 interface NewsItem extends NewsApiResult {
   sentiment: 'Bullish' | 'Bearish' | 'Neutral';
@@ -18,6 +19,7 @@ export default function NewsAnalysis() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedItems, setExpandedItems] = useState<Record<number, boolean>>({});
+  const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -90,6 +92,25 @@ export default function NewsAnalysis() {
     }));
   };
 
+  const handleImageError = (index: number) => {
+    setImageErrors(prev => ({
+      ...prev,
+      [index]: true
+    }));
+  };
+
+  // Placeholder images based on sentiment
+  const getPlaceholderImage = (sentiment: string) => {
+    switch (sentiment.toLowerCase()) {
+      case 'bullish':
+        return '/images/bullish-placeholder.svg';
+      case 'bearish':
+        return '/images/bearish-placeholder.svg';
+      default:
+        return '/images/neutral-placeholder.svg';
+    }
+  };
+
   return (
     <Card className="w-full h-full shadow-md border-primary/10">
       <CardHeader className="py-3 px-4">
@@ -103,9 +124,12 @@ export default function NewsAnalysis() {
           {loading ? (
             <div className="space-y-3 p-4">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="space-y-2">
-                  <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-3 w-1/2" />
+                <div key={i} className="flex gap-3 p-3">
+                  <Skeleton className="h-16 w-16 rounded-md flex-shrink-0" />
+                  <div className="space-y-2 flex-1">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-1/2" />
+                  </div>
                 </div>
               ))}
             </div>
@@ -120,48 +144,69 @@ export default function NewsAnalysis() {
                   key={index}
                   className="p-3 hover:bg-muted/20 transition-colors"
                 >
-                  <div className="space-y-1">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1">
-                        <h3 className="text-sm font-medium line-clamp-2">
-                          {item.title}
-                        </h3>
-                        <div className="flex items-center text-xs text-muted-foreground mt-0.5">
-                          <span className="font-medium">{item.source_id}</span>
-                          <span className="mx-1">•</span>
-                          <span>{formatDate(item.pubDate)}</span>
-                        </div>
-                      </div>
-                      <Badge className={`${getSentimentColor(item.sentiment)} text-xs border`}>
-                        {item.sentiment}
-                      </Badge>
+                  <div className="flex gap-3">
+                    <div className="relative h-16 w-16 rounded-md overflow-hidden flex-shrink-0 bg-muted">
+                      {item.image_url && !imageErrors[index] ? (
+                        <Image
+                          src={item.image_url}
+                          alt={item.title}
+                          fill
+                          className="object-cover"
+                          onError={() => handleImageError(index)}
+                        />
+                      ) : (
+                        <Image
+                          src={getPlaceholderImage(item.sentiment)}
+                          alt={`${item.sentiment} news`}
+                          fill
+                          className="object-cover"
+                        />
+                      )}
                     </div>
                     
-                    {expandedItems[index] && (
-                      <p className="text-xs text-muted-foreground mt-2">
-                        {item.description}
-                      </p>
-                    )}
-                    
-                    <div className="flex justify-between items-center mt-1">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-6 px-2 text-xs"
-                        onClick={() => toggleExpand(index)}
-                      >
-                        {expandedItems[index] ? 'Show Less' : 'Read More'}
-                      </Button>
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1">
+                          <h3 className="text-sm font-medium line-clamp-2">
+                            {item.title}
+                          </h3>
+                          <div className="flex items-center text-xs text-muted-foreground mt-0.5">
+                            <span className="font-medium">{item.source_id}</span>
+                            <span className="mx-1">•</span>
+                            <span>{formatDate(item.pubDate)}</span>
+                          </div>
+                        </div>
+                        <Badge className={`${getSentimentColor(item.sentiment)} text-xs border`}>
+                          {item.sentiment}
+                        </Badge>
+                      </div>
                       
-                      <a
-                        href={item.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-primary flex items-center hover:underline"
-                      >
-                        Source
-                        <ExternalLinkIcon className="h-3 w-3 ml-0.5" />
-                      </a>
+                      {expandedItems[index] && (
+                        <p className="text-xs text-muted-foreground mt-2">
+                          {item.description}
+                        </p>
+                      )}
+                      
+                      <div className="flex justify-between items-center mt-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 px-2 text-xs"
+                          onClick={() => toggleExpand(index)}
+                        >
+                          {expandedItems[index] ? 'Show Less' : 'Read More'}
+                        </Button>
+                        
+                        <a
+                          href={item.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-primary flex items-center hover:underline"
+                        >
+                          Source
+                          <ExternalLinkIcon className="h-3 w-3 ml-0.5" />
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>

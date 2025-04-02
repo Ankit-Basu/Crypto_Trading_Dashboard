@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from 'react';
-import { createChart, ColorType, IChartApi, CrosshairMode } from 'lightweight-charts';
+import { createChart, ColorType, IChartApi } from 'lightweight-charts';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -125,7 +125,7 @@ export default function TechnicalAnalysis({ asset }: TechnicalAnalysisProps) {
           },
         },
         crosshair: {
-          mode: CrosshairMode.Normal,
+          mode: 'Normal',
           vertLine: {
             width: 1,
             color: 'rgba(224, 227, 235, 0.5)',
