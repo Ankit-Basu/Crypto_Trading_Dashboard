@@ -14,7 +14,7 @@ export async function getTopCryptos(limit: number = 20): Promise<CryptoAsset[]> 
       `${COINGECKO_API_BASE}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${limit}&page=1&sparkline=false`,
       {
         headers: {
-          'x-cg-demo-api-key': apiKey,
+          'x-cg-api-key': apiKey,
           'Content-Type': 'application/json'
         }
       }
@@ -51,12 +51,14 @@ export async function getCryptoHistory(
   }
   
   try {
-    // Using the demo API key format for CoinGecko API
+    // Add delay between requests to avoid rate limiting
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
     const response = await createApiRequest(
       `${COINGECKO_API_BASE}/coins/${id}/market_chart?vs_currency=usd&days=${days}&interval=${interval}`,
       {
         headers: {
-          'x-cg-demo-api-key': apiKey,
+          'x-cg-api-key': apiKey,
           'Content-Type': 'application/json'
         }
       }
