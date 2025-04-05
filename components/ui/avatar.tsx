@@ -1,4 +1,4 @@
-'use client';
+'use client'; // This file is a client component and should be used in a client context
 
 import * as React from 'react';
 import * as AvatarPrimitive from '@radix-ui/react-avatar';
