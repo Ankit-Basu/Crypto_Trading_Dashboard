@@ -17,6 +17,7 @@ import {
   AlertCircleIcon,
   BellIcon
 } from 'lucide-react';
+import { CryptoAsset } from '../types/market';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -30,7 +31,11 @@ interface QuickAction {
   color: string;
 }
 
-export default function ChatbotAssistant() {
+interface ChatbotAssistantProps {
+  selectedAsset: CryptoAsset | null;
+}
+
+export default function ChatbotAssistant({ selectedAsset }: ChatbotAssistantProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',

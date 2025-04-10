@@ -67,8 +67,8 @@ A comprehensive, AI-powered dashboard for cryptocurrency trading analysis, marke
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/crypto-dashboard.git
-   cd crypto-dashboard
+   git clone https://github.com/Ankit-Basu/Crypto_Trading_Dashboard.git
+   cd Crypto_Trading_Dashboard
    ```
 
 2. **Install dependencies**
@@ -158,6 +158,11 @@ yarn test
 
 ## 🚢 Deployment
 
+### Live Demo
+
+Check out the live application deployed on Vercel:
+[https://crypto-trading-dashboard-oj6zw56cc.vercel.app](https://crypto-trading-dashboard-oj6zw56cc.vercel.app)
+
 ### Building for Production
 
 ```bash
@@ -166,12 +171,12 @@ npm run build
 yarn build
 ```
 
-### Starting Production Server
+### Deploying to Vercel
+
+The easiest way to deploy this application is using Vercel:
 
 ```bash
-npm run start
-# or
-yarn start
+npx vercel --prod
 ```
 
 ## 🤝 Contributing

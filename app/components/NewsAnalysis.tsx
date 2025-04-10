@@ -9,12 +9,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { NewspaperIcon, ExternalLinkIcon, ChevronRightIcon, ImageIcon } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import Image from 'next/image';
+import { CryptoAsset } from '../types/market';
 
 interface NewsItem extends NewsApiResult {
   sentiment: 'Bullish' | 'Bearish' | 'Neutral';
 }
 
-export default function NewsAnalysis() {
+interface NewsAnalysisProps {
+  asset?: CryptoAsset | null;
+}
+
+export default function NewsAnalysis({ asset }: NewsAnalysisProps) {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

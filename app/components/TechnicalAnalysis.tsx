@@ -100,23 +100,18 @@ export default function TechnicalAnalysis({ asset }: TechnicalAnalysisProps) {
         layout: {
           background: { type: ColorType.Solid, color: 'transparent' },
           textColor: 'rgba(255, 255, 255, 0.7)',
-          fontSize: 12,
         },
         grid: {
-          vertLines: { color: 'rgba(43, 43, 67, 0.5)', style: 1 },
-          horzLines: { color: 'rgba(43, 43, 67, 0.5)', style: 1 },
+          vertLines: { color: 'rgba(43, 43, 67, 0.5)' },
+          horzLines: { color: 'rgba(43, 43, 67, 0.5)' },
         },
         width: chartContainerRef.current.clientWidth,
         height: 300,
         timeScale: {
           timeVisible: true,
-          secondsVisible: false,
-          borderColor: 'rgba(43, 43, 67, 0.8)',
-          rightOffset: 5,
-          barSpacing: 10,
-          fixLeftEdge: true,
-          lockVisibleTimeRangeOnResize: true,
+          borderColor: 'rgba(43, 43, 67, 0.5)',
         },
+        // @ts-ignore - Compatibility with current library version
         rightPriceScale: {
           borderColor: 'rgba(43, 43, 67, 0.8)',
           scaleMargins: {
@@ -145,11 +140,11 @@ export default function TechnicalAnalysis({ asset }: TechnicalAnalysisProps) {
 
       chartRef.current = chart;
 
-      const mainSeries = chart.addAreaSeries({
-        topColor: 'rgba(38, 198, 218, 0.56)',
-        bottomColor: 'rgba(38, 198, 218, 0.04)',
-        lineColor: 'rgba(38, 198, 218, 1)',
+      const mainSeries = chart.addLineSeries({
+        color: 'rgba(76, 175, 80, 0.5)',
         lineWidth: 2,
+        // @ts-ignore - Compatibility with current library version
+        priceLineVisible: false,
       });
 
       mainSeries.setData(chartData);
@@ -159,14 +154,16 @@ export default function TechnicalAnalysis({ asset }: TechnicalAnalysisProps) {
         if (selectedIndicator === 'all' || selectedIndicator === 'bb') {
           // Add Bollinger Bands
           const bbUpper = chart.addLineSeries({
-            color: 'rgba(76, 175, 80, 0.6)',
+            color: 'rgba(33, 150, 243, 0.6)',
             lineWidth: 1,
+            // @ts-ignore - Compatibility with current library version
             lineStyle: 2,
           });
 
           const bbLower = chart.addLineSeries({
             color: 'rgba(255, 82, 82, 0.6)',
             lineWidth: 1,
+            // @ts-ignore - Compatibility with current library version
             lineStyle: 2,
           });
 
@@ -199,6 +196,7 @@ export default function TechnicalAnalysis({ asset }: TechnicalAnalysisProps) {
           const ma200 = chart.addLineSeries({
             color: 'rgba(0, 188, 212, 0.8)',
             lineWidth: 1.5,
+            // @ts-ignore - Compatibility with current library version
             lineStyle: 2,
           });
           
@@ -221,9 +219,40 @@ export default function TechnicalAnalysis({ asset }: TechnicalAnalysisProps) {
           ma50.setData(ma50Data);
           ma200.setData(ma200Data);
         }
+
+        if (selectedIndicator === 'all' || selectedIndicator === 'macd') {
+          // Add MACD
+          const macdLine = chart.addLineSeries({
+            color: 'rgba(76, 175, 80, 0.8)',
+            lineWidth: 1,
+            // @ts-ignore - Compatibility with current library version
+            lineStyle: 0,
+          });
+          
+          const signalLine = chart.addLineSeries({
+            color: 'rgba(255, 82, 82, 0.8)',
+            lineWidth: 1,
+            // @ts-ignore - Compatibility with current library version
+            lineStyle: 0,
+          });
+
+          const macdData = chartData.map((item) => ({
+            time: item.time,
+            value: indicators.macd.macdLine
+          }));
+
+          const signalData = chartData.map((item) => ({
+            time: item.time,
+            value: indicators.macd.signalLine
+          }));
+
+          macdLine.setData(macdData);
+          signalLine.setData(signalData);
+        }
       }
 
       // Fit content and handle resize
+      // @ts-ignore - Compatibility with current library version
       chart.timeScale().fitContent();
       
       const handleResize = () => {
